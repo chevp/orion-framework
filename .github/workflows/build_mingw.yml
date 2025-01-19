@@ -1,0 +1,47 @@
+name: C++ Build with MinGW on Windows
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    # Step 2: Install MinGW via Chocolatey
+    - name: Install MinGW
+      run: |
+        choco install mingw --installargs 'ADD_MINGW_TO_PATH=System'
+
+    # Step 3: Set up MinGW as the CMake toolchain
+    - name: Set MinGW as CMake toolchain
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "MinGW Makefiles"  # MinGW Makefiles generator
+
+    # Step 4: Build the project with MinGW
+    - name: Build Project with MinGW
+      run: |
+        cd build
+        cmake --build . --config Release
+
+    # Step 5: Run tests with CTest (optional)
+    - name: Run Tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    # Step 6: Clean up build files (optional)
+    - name: Clean up
+      run: |
+        Remove-Item -Recurse -Force build
