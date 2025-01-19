@@ -34,7 +34,7 @@ jobs:
     - name: Upload .exe as Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: my-app
+        name: microservice-app
         path: build/Release/microservice-app.exe  # Adjust path based on your project's output
 
     # Optional: Run tests (if applicable)
