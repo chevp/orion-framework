@@ -27,7 +27,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles"  # Use MinGW Makefiles generator
+        cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
 
     # Step 4: Upload the .exe as Artifact
@@ -35,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: microservice-app
-        path: build/Release/microservice-app.exe  # Adjust path based on your project's output
+        path: build/Release/microservice-app.exe
 
     # Optional: Run tests (if applicable)
     - name: Run Tests
