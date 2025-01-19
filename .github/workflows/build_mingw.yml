@@ -30,9 +30,9 @@ jobs:
         cmake .. -G "MinGW Makefiles"  # Use MinGW Makefiles generator
         cmake --build . --config Release
 
-    # Step 4: Upload the .exe file as an artifact
+    # Step 4: Upload the .exe as Artifact
     - name: Upload .exe as Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: my-app
         path: build/Release/my-app.exe  # Adjust path based on your project's output
