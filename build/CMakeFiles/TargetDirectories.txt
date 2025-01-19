@@ -1,0 +1,5 @@
+C:/projects-hub/orion-framework/build/CMakeFiles/microservice-app.dir
+C:/projects-hub/orion-framework/build/CMakeFiles/ALL_BUILD.dir
+C:/projects-hub/orion-framework/build/CMakeFiles/ZERO_CHECK.dir
+C:/projects-hub/orion-framework/build/src/modules/plugin_a/CMakeFiles/plugin_a.dir
+C:/projects-hub/orion-framework/build/src/modules/plugin_b/CMakeFiles/plugin_b.dir

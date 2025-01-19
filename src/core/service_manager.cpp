@@ -1,32 +1,33 @@
 #include "service_manager.h"
 #include <iostream>
-#include <dlfcn.h>
+#include <windows.h>
+#include <memory> // For std::shared_ptr
 
 ServiceManager::~ServiceManager() {
-    // Beim Zerstören des ServiceManagers werden alle Plugins entfernt.
+    // When destroying the ServiceManager, unload all plugins.
     for (auto& plugin : plugins) {
         unloadPlugin(plugin.first);
     }
 }
 
 bool ServiceManager::loadPlugin(const std::string& pluginName, const std::string& path) {
-    // Plugin dynamisch laden
-    void* handle = dlopen(path.c_str(), RTLD_LAZY);
+    // Load the plugin DLL dynamically (Windows equivalent of dlopen)
+    HMODULE handle = LoadLibrary(path.c_str());
     if (!handle) {
-        std::cerr << "Error loading plugin " << pluginName << ": " << dlerror() << std::endl;
+        std::cerr << "Error loading plugin " << pluginName << ": " << GetLastError() << std::endl;
         return false;
     }
 
-    // Plugin-Factory-Funktionen abrufen
-    auto createPlugin = (PluginInterface* (*)()) dlsym(handle, "create_plugin");
+    // Get the plugin factory function (Windows equivalent of dlsym)
+    auto createPlugin = (PluginInterface* (*)()) GetProcAddress(handle, "create_plugin");
     if (!createPlugin) {
-        std::cerr << "Error finding 'create_plugin' function in " << pluginName << ": " << dlerror() << std::endl;
-        dlclose(handle);
+        std::cerr << "Error finding 'create_plugin' function in " << pluginName << ": " << GetLastError() << std::endl;
+        FreeLibrary(handle);  // Close the DLL if the function is not found
         return false;
     }
 
-    // Plugin erstellen
-    std::shared_ptr<PluginInterface> plugin(createPlugin(), [handle](PluginInterface*) { dlclose(handle); });
+    // Create the plugin instance
+    std::shared_ptr<PluginInterface> plugin(createPlugin(), [handle](PluginInterface*) { FreeLibrary(handle); });
     plugins[pluginName] = plugin;
     return true;
 }

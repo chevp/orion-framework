@@ -1,0 +1,48 @@
+name: C++ Build and Test on Windows
+
+# Dieser Workflow wird bei jedem Push und Pull Request auf dem Hauptbranch ausgeführt
+on:
+  push:
+    branches:
+      - main  # Der Workflow wird bei einem Push auf den 'main'-Branch ausgeführt
+  pull_request:
+    branches:
+      - main  # Der Workflow wird bei einem Pull Request auf den 'main'-Branch ausgeführt
+
+jobs:
+  build:
+    runs-on: windows-latest  # Der Job läuft auf der neuesten Windows-Version von GitHub Actions
+
+    steps:
+    # Schritt 1: Das Repository auschecken
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    # Schritt 2: Installiere CMake (falls nicht schon vorhanden)
+    - name: Install CMake
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'  # Verwenden von Chocolatey zum Installieren von CMake
+
+    # Schritt 3: Installiere Visual Studio Build Tools (falls nicht schon vorhanden)
+    - name: Install Visual Studio Build Tools
+      run: |
+        choco install visualstudio2019buildtools
+
+    # Schritt 4: Erstelle das Build-Verzeichnis und baue das Projekt mit CMake
+    - name: Build Project with CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -G "Visual Studio 16 2019"  # Visual Studio 2019 als Generator verwenden
+        cmake --build . --config Release  # Release Build durchführen
+
+    # Schritt 5: Führe Tests mit CTest aus
+    - name: Run Tests
+      run: |
+        cd build
+        ctest --output-on-failure  # CTest ausführen, um Tests zu starten
+
+    # Schritt 6: Optional: Bereinigung der Build-Dateien
+    - name: Clean up
+      run: |
+        Remove-Item -Recurse -Force build

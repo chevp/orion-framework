@@ -1,17 +1,22 @@
-#include "plugin_a.h"
+#include <windows.h>
 #include <iostream>
+#include "plugin_a.h"
 
-class PluginAImpl : public PluginA {
+class PluginA : public PluginInterface {
 public:
     std::string execute() override {
-        return "Plugin A executed!";
+        return "Plugin A executed";
     }
 };
 
-extern "C" PluginA* create_plugin() {
-    return new PluginAImpl();
+extern "C" __declspec(dllexport) PluginInterface* create_plugin() {
+    return new PluginA();
 }
 
-extern "C" void destroy_plugin(PluginA* plugin) {
+extern "C" __declspec(dllexport) void destroy_plugin(PluginInterface* plugin) {
     delete plugin;
+}
+
+extern "C" BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved) {
+    return TRUE;
 }

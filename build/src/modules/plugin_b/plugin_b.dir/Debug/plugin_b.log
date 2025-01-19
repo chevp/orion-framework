@@ -1,0 +1,4 @@
+﻿  Building Custom Rule C:/projects-hub/orion-framework/src/modules/plugin_b/CMakeLists.txt
+  plugin_b.cpp
+     Bibliothek "C:/projects-hub/orion-framework/build/src/modules/plugin_b/Debug/plugin_b.lib" und Objekt "C:/projects-hub/orion-framework/build/src/modules/plugin_b/Debug/plugin_b.exp" werden erstellt.
+  plugin_b.vcxproj -> C:\projects-hub\orion-framework\build\src\modules\plugin_b\Debug\plugin_b.dll
