@@ -1,0 +1,62 @@
+# CMake build directory
+/build/
+# cmake cache files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+# cmake generated files
+Makefile
+cmake_install.cmake
+# Optional: CMake install prefix (if set in the project)
+install/
+
+# Visual Studio files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# MacOS Finder
+.DS_Store
+
+# Windows thumbnails
+Thumbs.db
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+
+# Windows specific: VS Code settings for Windows
+.vscode/
+
+# Debug and Release build folders
+Debug/
+Release/
+Debug_*/
+Release_*/
+
+# Object files, static libraries, and executables
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.out
+*.obj
+
+# Temporary files from the compiler
+*.tmp
+*.swp
+*.bak
+*.dSYM/
+
+# vcpkg dependencies (if you're using vcpkg)
+/vcpkg/
+
+# Ignore editor backups
+*~ 

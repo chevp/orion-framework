@@ -13,35 +13,42 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # Schritt 1: Das Repository auschecken
+    # Step 1: Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # Schritt 2: Installiere CMake (falls nicht schon vorhanden)
+    # Step 2: Install CMake (if not already installed)
     - name: Install CMake
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
-    # Schritt 3: Installiere Visual Studio Build Tools
+    # Step 3: Install Visual Studio Build Tools with NativeDesktop workload
     - name: Install Visual Studio Build Tools
       run: |
         choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended --quiet"
 
-    # Schritt 4: Erstelle das Build-Verzeichnis und baue das Projekt mit CMake
+    # Step 4: Set up the Visual Studio environment
+    - name: Set up Visual Studio environment
+      run: |
+        $vs_install_dir = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
+        & "$vs_install_dir\MSBuild\Current\Bin\MSBuild.exe" /version
+        echo "##vso[task.setvariable variable=VisualStudioInstallDir]$vs_install_dir"
+
+    # Step 5: Create the build directory and build the project with CMake
     - name: Build Project with CMake
       run: |
         mkdir build
         cd build
-        cmake .. -G "Visual Studio 16 2019"  # Generator für Visual Studio 2019
+        cmake .. -G "Visual Studio 16 2019"  # Adjust to "Visual Studio 17 2022" if using Visual Studio 2022
         cmake --build . --config Release
 
-    # Schritt 5: Führe Tests mit CTest aus
+    # Step 6: Run tests with CTest
     - name: Run Tests
       run: |
         cd build
         ctest --output-on-failure
 
-    # Schritt 6: Optional: Bereinigung der Build-Dateien
+    # Step 7: Clean up build files (optional)
     - name: Clean up
       run: |
         Remove-Item -Recurse -Force build
