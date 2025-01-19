@@ -35,7 +35,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: my-app
-        path: build/Release/my-app.exe  # Adjust path based on your project's output
+        path: build/Release/microservice-app.exe  # Adjust path based on your project's output
 
     # Optional: Run tests (if applicable)
     - name: Run Tests
