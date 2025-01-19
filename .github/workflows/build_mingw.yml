@@ -22,26 +22,28 @@ jobs:
       run: |
         choco install mingw --installargs 'ADD_MINGW_TO_PATH=System'
 
-    # Step 3: Set up MinGW as the CMake toolchain
-    - name: Set MinGW as CMake toolchain
+    # Step 3: Build the project with MinGW using CMake
+    - name: Build Project with MinGW
       run: |
         mkdir build
         cd build
-        cmake .. -G "MinGW Makefiles"  # MinGW Makefiles generator
-
-    # Step 4: Build the project with MinGW
-    - name: Build Project with MinGW
-      run: |
-        cd build
+        cmake .. -G "MinGW Makefiles"  # Use MinGW Makefiles generator
         cmake --build . --config Release
 
-    # Step 5: Run tests with CTest (optional)
+    # Step 4: Upload the .exe file as an artifact
+    - name: Upload .exe as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-app
+        path: build/Release/my-app.exe  # Adjust path based on your project's output
+
+    # Optional: Run tests (if applicable)
     - name: Run Tests
       run: |
         cd build
         ctest --output-on-failure
 
-    # Step 6: Clean up build files (optional)
+    # Clean up build files (optional)
     - name: Clean up
       run: |
         Remove-Item -Recurse -Force build
