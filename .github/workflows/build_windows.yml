@@ -10,33 +10,43 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest  # Use GitHub's pre-configured Windows environment
+    runs-on: windows-latest
 
     steps:
     # Step 1: Checkout the repository
     - name: Checkout Repository
       uses: actions/checkout@v2
 
-    # Step 2: Install CMake (if not already installed)
+    # Step 2: Install CMake
     - name: Install CMake
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
-    # Step 3: Create the build directory and build the project with CMake
+    # Step 3: Install Visual Studio Build Tools (if not installed)
+    - name: Install Visual Studio Build Tools
+      run: |
+        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.NativeDesktop --includeRecommended --quiet"
+
+    # Step 4: Set Visual Studio environment variables (optional, but helpful)
+    - name: Check Visual Studio Installation
+      run: |
+        & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -all -products * -requires Microsoft.Component.MSBuild -property installationPath
+
+    # Step 5: Build the project with CMake (use correct Visual Studio version generator)
     - name: Build Project with CMake
       run: |
         mkdir build
         cd build
-        cmake .. -G "Visual Studio 16 2019"  # Change to "Visual Studio 17 2022" for newer versions
+        cmake .. -G "Visual Studio 17 2022"  # Use "Visual Studio 16 2019" if required
         cmake --build . --config Release
 
-    # Step 4: Run tests with CTest
+    # Step 6: Run tests with CTest
     - name: Run Tests
       run: |
         cd build
         ctest --output-on-failure
 
-    # Step 5: Clean up build files (optional)
+    # Step 7: Clean up build files (optional)
     - name: Clean up
       run: |
         Remove-Item -Recurse -Force build
